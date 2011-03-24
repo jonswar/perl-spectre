@@ -1,41 +1,19 @@
 ^MANIFEST.SKIP$
-^Makefile$
-^Makefile.old$
 ^NOTES
 ^TODO
 ^bench
-^blib
-^build
-^cp\.yml
 ^data
-^depends
 ^dist.ini
 ^docs
 ^git
 ^htdocs
-^inc/\.author
-^localcpan
-^misc
 ^release
 ^tmp
 ^weaver.ini
-^wiki
 ^z-backup
 
-# pod2html files
-\.pm\.html
-
-# Backup files, etc.
 ~$
 (^|/)#
 (^|/)\.
 \.bak$
 \.tar\.gz$
-
-# SVN cruft
-^\.svn
-
-# MakeMaker cruft
-
-# pod2html files
-\.pm\.html

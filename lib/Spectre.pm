@@ -1,41 +1,75 @@
 package Spectre;
-use 5.008;
+use Carp;
+use Spectre::Util;
 use strict;
 use warnings;
+
+# export_to_level() is used by bootstrap modules like Spectre::Script.
+#
+sub import {
+    my $pkg = shift;
+    $pkg->export_to_level( 1, undef, @_ );
+}
+
+sub export_to_level {
+    my ( $pkg, $level, $ignore, @params ) = @_;
+
+    # Import Spectre::Util functions into caller.
+    #
+    Spectre::Util->export_to_level( $level + 1 );
+
+    # Import requested globals into caller.
+    #
+    my @vars = grep { /^\$/ } @params;
+    my @valid_import_params = qw($cache $conf $env $log $root);
+    if (@vars) {
+        my ($caller) = caller($level);
+
+        foreach my $var (@vars) {
+            my $value;
+            if ( $var eq '$cache' ) {
+                require Spectre::Cache;
+                $value = Spectre::Cache->new( namespace => $caller );
+            }
+            elsif ( $var eq '$conf' ) {
+                $value = Spectre::Environment->get_environment()->conf();
+            }
+            elsif ( $var eq '$env' ) {
+                $value = Spectre::Environment->get_environment();
+            }
+            elsif ( $var eq '$log' ) {
+                $value = Log::Any->get_logger( category => $caller );
+            }
+            elsif ( $var eq '$root' ) {
+                $value = Spectre::Environment->get_environment()->root_dir();
+            }
+            else {
+                die sprintf(
+                    "unknown import parameter '$var' passed to Spectre: valid import parameters are %s",
+                    join( ", ", map { "'$_'" } @valid_import_params ) );
+            }
+            my $no_sigil_var = substr( $var, 1 );
+            no strict 'refs';
+            *{"$caller\::$no_sigil_var"} = \$value;
+        }
+    }
+}
+
+sub initialize_environment {
+    my $class = shift;
+    Spectre::Environment->initialize_current_environment(@_);
+}
+
+sub initialize_environment_if_needed {
+    my $class = shift;
+    if ( !Spectre::Environment->get_environment() ) {
+        Spectre::Environment->initialize_current_environment(@_);
+    }
+}
+
+use Spectre::Conf;
+use Spectre::Environment;
 
 1;
 
 __END__
-
-=pod
-
-=head1 NAME
-
-Spectre - Continuous integration smoke server
-
-=head1 SYNOPSIS
-
-    use Spectre;
-
-=head1 DESCRIPTION
-
-Spectre provides
-
-Questions and feedback are welcome, and should be directed to the mailing list:
-
-    http://groups.google.com/...
-
-Bugs and feature requests will be tracked at RT:
-
-    http://rt.cpan.org/NoAuth/Bugs.html?Dist=Spectre
-    bug-spectre@rt.cpan.org
-
-The latest source code can be browsed and fetched at:
-
-    http://github.com/jonswar/perl-spectre
-    git clone git://github.com/jonswar/perl-spectre.git
-
-=head1 SEE ALSO
-
-L<Some::Module>
-
