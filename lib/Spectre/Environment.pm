@@ -4,7 +4,7 @@ use Spectre::Conf;
 use Spectre::Util;
 use Moose;
 
-use constant standard_subdirs => [qw(bin comps conf lib log state)];
+use constant standard_subdirs => [qw(bin comps conf lib logs state)];
 
 has 'conf'           => ( is => 'ro' );
 has 'is_development' => ( is => 'ro' );

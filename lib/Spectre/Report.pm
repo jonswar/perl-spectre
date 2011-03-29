@@ -105,55 +105,58 @@ method new_from_tap_archive ($class:) {
                       $total ? sprintf( '%i', ( ( $total - $failed ) / $total ) * 100 ) : 100;
 
                     # record the individual test file and test file result
-                    my $test_file = Spectre::TestFile->new( name => $name );
-                    my $test_file_result = Spectre::TestFileResult->new(
-                        test_file => $test_file,
-                        total     => $total,
-                        passed    => $passed,
-                        failed    => $failed,
-                        percent   => $percent,
-                        tests     => [@tests],
-                    );
-                    push( @test_file_results, $test_file_result );
+                    my ($test_file) =
+                      Spectre::TestFile::Manager->get_test_files( query => [ name => $name ] );
+                    unless ($test_file) {
+                        $test_file = Spectre::TestFile::Manager->new( name => $name );
+                        my $test_file_result = Spectre::TestFileResult->new(
+                            test_file => $test_file,
+                            total     => $total,
+                            passed    => $passed,
+                            failed    => $failed,
+                            percent   => $percent,
+                            tests     => [@tests],
+                        );
+                        push( @test_file_results, $test_file_result );
 
-                    $suite_data{total}  += $total;
-                    $suite_data{failed} += $failed;
-                  }
-            },
+                        $suite_data{total}  += $total;
+                        $suite_data{failed} += $failed;
+                    }
+                },
+            }
+        );
+
+          # Create report
+          #
+          my $report = $class->new(
+            create_time       => time,
+            failed_count      => $suite_data{failed},
+            layer             => $report_layer,
+            name              => $report_name,
+            passed_count      => scalar( $aggregator->passed ),
+            run_duration      => $meta->{stop_time} - $meta->{start_time},
+            run_time          => DateTime->from_epoch( epoch => $meta->{start_time} ),
+            skipped_count     => scalar( $aggregator->skipped ),
+            test_file_results => \@test_file_results,
+            todo_count        => scalar( $aggregator->todo ),
+            todo_passed_count => scalar( $aggregator->todo_passed ),
+            total_count       => $suite_data{total},
+          );
+          $report->save;
+
+          return $report;
         }
-    );
 
-    # Create report
-    #
-    my $report = $class->new(
-        create_time       => time,
-        failed_count      => $suite_data{failed},
-        layer             => $report_layer,
-        name              => $report_name,
-        passed_count      => scalar( $aggregator->passed ),
-        run_duration      => $meta->{stop_time} - $meta->{start_time},
-        run_time          => DateTime->from_epoch( epoch => $meta->{start_time} ),
-        skipped_count     => scalar( $aggregator->skipped ),
-        test_file_results => \@test_file_results,
-        todo_count        => scalar( $aggregator->todo ),
-        todo_passed_count => scalar( $aggregator->todo_passed ),
-        total_count       => $suite_data{total},
-    );
-    $report->save;
-
-    return $report;
-}
-
-# Stringify dates when dumping
-#
-method dump () {
-    my $clone = clone($self);
-    foreach my $field qw(process_time run_time) {
-        $clone->{$field} = $clone->$field . "";
+      # Stringify dates when dumping
+      #
+      sub dump () {    #__METHOD
+        my $clone = clone($self);
+        foreach my $field qw(process_time run_time) {
+            $clone->{$field} = $clone->$field . "";
+        }
+        return $clone->SUPER::dump;
     }
-    return $clone->SUPER::dump;
-}
 
-1;
+    1;
 
-__PACKAGE__->meta->make_immutable();
+    __PACKAGE__->meta->make_immutable();

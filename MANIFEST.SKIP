@@ -2,6 +2,7 @@
 ^NOTES
 ^TODO
 ^bench
+^bin/tmp
 ^data
 ^dist.ini
 ^docs
@@ -11,9 +12,10 @@
 ^tmp
 ^weaver.ini
 ^z-backup
+^\.git
+^\.perltidyrc
 
 ~$
 (^|/)#
-(^|/)\.
 \.bak$
 \.tar\.gz$
