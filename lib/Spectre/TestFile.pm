@@ -1,11 +1,8 @@
 package Spectre::TestFile;
-use Spectre::Moose;
+use base qw(Spectre::DB::Object);
 
-has 'mute_until'        => ();
-has 'name'              => ();
-has 'owner'             => ();
-has 'test_file_results' => ();
+__PACKAGE__->meta->table('test_files');
+__PACKAGE__->meta->auto_initialize;
+__PACKAGE__->meta->make_manager_class('test_files');
 
 1;
-
-__PACKAGE__->meta->make_immutable();

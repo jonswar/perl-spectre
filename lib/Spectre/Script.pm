@@ -13,6 +13,9 @@ my $root_marker_file = ".spectre_root";
 sub import {
     my $pkg = shift;
 
+    strict->import;
+    warnings->import;
+
     my $root_dir = determine_root_dir();
     my $lib_dir  = "$root_dir/lib";
     unshift( @INC, $lib_dir );
