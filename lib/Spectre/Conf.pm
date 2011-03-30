@@ -4,9 +4,11 @@ use Memoize;
 use Moose;
 use Spectre::Util;
 use Try::Tiny;
-use YAML::AppConfig;
 use strict;
 use warnings;
+
+# suppress UNIVERSAL->isa warning
+{ local $^W = 0; require YAML::AppConfig }
 
 use YAML::XS qw(Dump Load);
 my $yaml_class = 'YAML::XS';

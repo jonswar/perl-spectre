@@ -1,5 +1,6 @@
 package Spectre;
 use Carp;
+use Method::Signatures::Simple;
 use Spectre::Util;
 use strict;
 use warnings;
@@ -13,6 +14,15 @@ sub import {
 
 sub export_to_level {
     my ( $pkg, $level, $ignore, @params ) = @_;
+    my ($caller) = caller($level);
+
+    Method::Signatures::Simple->import( into => $caller );
+    strict->import;
+    warnings->import;
+    {
+        no strict 'refs';
+        *{ $caller . '::CLASS' } = sub () { $caller };    # like CLASS.pm
+    }
 
     # Import Spectre::Util functions into caller.
     #
@@ -23,11 +33,13 @@ sub export_to_level {
     my @vars = grep { /^\$/ } @params;
     my @valid_import_params = qw($cache $conf $env $log $root);
     if (@vars) {
-        my ($caller) = caller($level);
-
         foreach my $var (@vars) {
             my $value;
-            if ( $var eq '$cache' ) {
+            if ( $var eq '$db' ) {
+                require Spectre::DB;
+                $value = Spectre::DB->new();
+            }
+            elsif ( $var eq '$cache' ) {
                 require Spectre::Cache;
                 $value = Spectre::Cache->new( namespace => $caller );
             }

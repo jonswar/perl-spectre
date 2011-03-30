@@ -82,7 +82,7 @@ sub BUILD {
 
     # Create log and state directories if necessary.
     #
-    foreach my $dir ( $self->log_dir(), $self->state_dir() ) {
+    foreach my $dir ( $self->logs_dir(), $self->state_dir() ) {
         mkpath( $dir, 0, 0755 )
           if ( !-d $dir );
     }

@@ -1,5 +1,8 @@
 package Spectre::Report;
+use Spectre;
+use Spectre::Result;
 use Clone::Fast qw( clone );
+use JSON;
 use TAP::Harness::Archive;
 use base qw(Spectre::DB::Object);
 
@@ -9,8 +12,7 @@ __PACKAGE__->meta->make_manager_class('reports');
 
 # Adapted from Smolder::DB::SmokeReport::update_from_tap_archive
 #
-method new_from_tap_archive ($class:) {
-    my ( $class, $archive_file ) = @_;
+method new_from_tap_archive ($class: $archive_file) {
 
     # Extract unique name, layer, and tap dir from base filename, e.g.
     #   report_name = development-03-14-14_59_45-bufl
@@ -23,7 +25,7 @@ method new_from_tap_archive ($class:) {
 
     # Our data structures for holding the info about the TAP parsing
     #
-    my ( @tests, $name, @test_file_results, $meta, $file_index, $failed, $skipped, $tap_stream );
+    my ( @tests, $file_name, $meta, $failed, $skipped, $tap_stream, @result_hashes );
 
     # keep track of some things on our own because TAP::Parser::Aggregator
     # doesn't handle total or failed right when a test exits early
@@ -33,7 +35,7 @@ method new_from_tap_archive ($class:) {
             archive              => $archive_file,
             made_parser_callback => sub {
                 my ( $parser, $file, $full_path ) = @_;
-                $name = basename($file);
+                $file_name = basename($file);
 
                 # clear them out for a new run
                 @tests = ();
@@ -101,62 +103,57 @@ method new_from_tap_archive ($class:) {
                     }
                     my $passed = $total - $failed;
 
-                    my $percent =
-                      $total ? sprintf( '%i', ( ( $total - $failed ) / $total ) * 100 ) : 100;
+                    push(
+                        @result_hashes,
+                        {
+                            file_name    => $file_name,
+                            passed_count => $passed,
+                            tests        => encode_json( \@tests ),
+                            total_count  => $total,
+                        }
+                    );
 
-                    # record the individual test file and test file result
-                    my ($test_file) =
-                      Spectre::TestFile::Manager->get_test_files( query => [ name => $name ] );
-                    unless ($test_file) {
-                        $test_file = Spectre::TestFile::Manager->new( name => $name );
-                        my $test_file_result = Spectre::TestFileResult->new(
-                            test_file => $test_file,
-                            total     => $total,
-                            passed    => $passed,
-                            failed    => $failed,
-                            percent   => $percent,
-                            tests     => [@tests],
-                        );
-                        push( @test_file_results, $test_file_result );
-
-                        $suite_data{total}  += $total;
-                        $suite_data{failed} += $failed;
-                    }
-                },
-            }
-        );
-
-          # Create report
-          #
-          my $report = $class->new(
-            create_time       => time,
-            failed_count      => $suite_data{failed},
-            layer             => $report_layer,
-            name              => $report_name,
-            passed_count      => scalar( $aggregator->passed ),
-            run_duration      => $meta->{stop_time} - $meta->{start_time},
-            run_time          => DateTime->from_epoch( epoch => $meta->{start_time} ),
-            skipped_count     => scalar( $aggregator->skipped ),
-            test_file_results => \@test_file_results,
-            todo_count        => scalar( $aggregator->todo ),
-            todo_passed_count => scalar( $aggregator->todo_passed ),
-            total_count       => $suite_data{total},
-          );
-          $report->save;
-
-          return $report;
+                    $suite_data{total}  += $total;
+                    $suite_data{failed} += $failed;
+                  }
+            },
         }
+    );
 
-      # Stringify dates when dumping
-      #
-      sub dump () {    #__METHOD
-        my $clone = clone($self);
-        foreach my $field qw(process_time run_time) {
-            $clone->{$field} = $clone->$field . "";
-        }
-        return $clone->SUPER::dump;
+    # Create report
+    #
+    my $report = $class->new(
+        create_time       => time,
+        layer             => $report_layer,
+        name              => $report_name,
+        passed_count      => scalar( $aggregator->passed ),
+        run_duration      => $meta->{stop_time} - $meta->{start_time},
+        run_time          => DateTime->from_epoch( epoch => $meta->{start_time} ),
+        skipped_count     => scalar( $aggregator->skipped ),
+        todo_count        => scalar( $aggregator->todo ),
+        todo_passed_count => scalar( $aggregator->todo_passed ),
+        total_count       => $suite_data{total},
+    );
+    $report->save;
+
+    # Create results
+    #
+    foreach my $result_hash (@result_hashes) {
+        my $result = Spectre::Result->new( %$result_hash, report_id => $report->id, );
+        $result->save;
     }
 
-    1;
+    return $report;
+}
 
-    __PACKAGE__->meta->make_immutable();
+# Stringify dates when dumping
+#
+method dump () {
+    my $clone = clone($self);
+    foreach my $field qw(process_time run_time) {
+        $clone->{$field} = $clone->$field . "";
+    }
+    return $clone->SUPER::dump;
+}
+
+1;
