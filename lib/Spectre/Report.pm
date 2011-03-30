@@ -8,7 +8,7 @@ use base qw(Spectre::DB::Object);
 
 __PACKAGE__->meta->table('reports');
 __PACKAGE__->meta->auto_initialize;
-__PACKAGE__->meta->make_manager_class('reports');
+__PACKAGE__->meta->make_manager_class( base_name => 'reports', class => 'Spectre::Reports' );
 
 # Adapted from Smolder::DB::SmokeReport::update_from_tap_archive
 #
