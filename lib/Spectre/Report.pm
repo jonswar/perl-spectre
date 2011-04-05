@@ -2,13 +2,46 @@ package Spectre::Report;
 use Spectre;
 use Spectre::Result;
 use Clone::Fast qw( clone );
-use JSON;
+use DateTime;
 use TAP::Harness::Archive;
 use base qw(Spectre::DB::Object);
 
-__PACKAGE__->meta->table('reports');
-__PACKAGE__->meta->auto_initialize;
+__PACKAGE__->meta->setup(
+    table   => 'reports',
+    columns => [
+        id       => { type => 'serial' },
+        comments => { type => 'text', default => '""', not_null => 1 },
+        create_time       => { type => 'datetime', not_null => 1 },
+        layer             => { type => 'text',     not_null => 1 },
+        name              => { type => 'text',     not_null => 1 },
+        passed_count      => { type => 'integer',  not_null => 1 },
+        run_duration      => { type => 'integer',  not_null => 1 },
+        run_time          => { type => 'datetime', not_null => 1 },
+        skipped_count     => { type => 'integer',  not_null => 1 },
+        todo_count        => { type => 'integer',  not_null => 1 },
+        todo_passed_count => { type => 'integer',  not_null => 1 },
+        total_count       => { type => 'integer',  not_null => 1 },
+    ],
+    primary_key_columns => ['id'],
+);
 __PACKAGE__->meta->make_manager_class( base_name => 'reports', class => 'Spectre::Reports' );
+
+method link () { "/report/" . $self->id }
+
+method all_results () {
+    return values( %{ $self->_results_by_file_name } );
+}
+
+method result_for_file ($file_name) {
+    return $self->_results_by_file_name->{$file_name};
+}
+
+method _results_by_file_name () {
+    $self->{_results_by_file_name} ||=
+      { map { ( $_->file_name, $_ ) }
+          @{ Spectre::Results->get_results( query => [ report_id => $self->id ] ) } };
+    $self->{_results_by_file_name};
+}
 
 # Adapted from Smolder::DB::SmokeReport::update_from_tap_archive
 #
@@ -108,7 +141,7 @@ method new_from_tap_archive ($class: $archive_file) {
                         {
                             file_name    => $file_name,
                             passed_count => $passed,
-                            tests        => encode_json( \@tests ),
+                            tests        => \@tests,
                             total_count  => $total,
                         }
                     );
@@ -123,7 +156,7 @@ method new_from_tap_archive ($class: $archive_file) {
     # Create report
     #
     my $report = $class->new(
-        create_time       => time,
+        create_time       => DateTime->now,
         layer             => $report_layer,
         name              => $report_name,
         passed_count      => scalar( $aggregator->passed ),
@@ -150,8 +183,8 @@ method new_from_tap_archive ($class: $archive_file) {
 #
 method dump () {
     my $clone = clone($self);
-    foreach my $field qw(process_time run_time) {
-        $clone->{$field} = $clone->$field . "";
+    foreach my $field qw(start_time create_time) {
+        $clone->{$field} = DateTime->from_epoch( epoch => $clone->{$field} ) . "";
     }
     return $clone->SUPER::dump;
 }

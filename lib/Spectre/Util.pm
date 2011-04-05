@@ -17,12 +17,13 @@ my %package_methods = (
     'File::Slurp'           => [qw(read_file write_file read_dir)],
     'File::Spec::Functions' => [qw(catdir catfile splitpath splitdir file_name_is_absolute tmpdir)],
     'File::Temp'            => [qw(tempfile tempdir)],
+    'Lingua::EN::Inflect'   => [qw(NO)],
     'List::MoreUtils' =>
       [qw(all any none apply first_index first_value indexes last_index last_value uniq)],
     'List::Util'          => [qw(first min max reduce shuffle)],
     'Module::Loaded'      => [qw(is_loaded)],
     'Scalar::Util'        => [qw(blessed weaken)],
-    'Spectre::Util::Core' => [qw(unique_id)],
+    'Spectre::Util::Core' => [qw(dd dh dhs dp dps dc dcs dump_one_line unique_id)],
     'Text::Elide'         => [qw(elide)],
     'Text::Trim'          => [qw(trim rtrim ltrim)],
 );

@@ -4,7 +4,7 @@ use Spectre::Conf;
 use Spectre::Util;
 use Moose;
 
-use constant standard_subdirs => [qw(bin comps conf lib logs state)];
+use constant standard_subdirs => [qw(bin comps conf data lib logs)];
 
 has 'conf'           => ( is => 'ro' );
 has 'is_development' => ( is => 'ro' );
@@ -80,9 +80,9 @@ sub BUILD {
         $self->{$method} = $self->{conf}->get( "env.$method" => $default );
     }
 
-    # Create log and state directories if necessary.
+    # Create log and data directories if necessary.
     #
-    foreach my $dir ( $self->logs_dir(), $self->state_dir() ) {
+    foreach my $dir ( $self->logs_dir(), $self->data_dir() ) {
         mkpath( $dir, 0, 0755 )
           if ( !-d $dir );
     }

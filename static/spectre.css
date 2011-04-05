@@ -1,0 +1,51 @@
+p {
+    font: 16px "Lucida Grande", "Arial", "sans-serif";
+}
+
+body {
+    font: 13px "Lucida Grande", "Arial", "sans-serif";
+    background-color: #fff;
+}
+
+img {
+    border: 0;	
+}
+
+/*
+ * Dashboard page
+ */
+
+#dashboard td a {
+    text-decoration: none;
+}
+#dashboard th a {
+    text-decoration: none;
+}
+
+#dashboard td.fail a {
+    color: #600;
+}
+
+#dashboard tr.all_ok {
+    display: none;
+}
+
+#dashboard tr.has_fail {
+}
+
+/*
+ * Result page
+ */
+
+#result ul.test_list {
+    list-style-type: none;
+    padding:0px;
+}
+
+#result li.test_ok {
+    color: #060;
+}
+
+#result li.test_fail {
+    color: #600;
+}
