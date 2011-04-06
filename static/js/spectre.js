@@ -17,3 +17,28 @@ sp.toggleOkRows = function () {
     $j('.toggle_ok').toggle();
 }
 
+sp.toggleOkFiles = function () {
+    $j('.toggle_ok_files').toggle();
+}
+
+sp.toggleResult = function (id) {
+    $j('#result' + id).toggle();
+    $j('#triangle_right' + id).toggle();
+    $j('#triangle_down' + id).toggle();
+}
+
+sp.openAllResults = function () {
+    $j('.single_result').show();
+    $j('.triangle_down').show();
+    $j('.triangle_right').hide();
+    $j('#open_all_results').hide();
+    $j('#close_all_results').show();
+}
+
+sp.closeAllResults = function () {
+    $j('.single_result').hide();
+    $j('.triangle_down').hide();
+    $j('.triangle_right').show();
+    $j('#open_all_results').show();
+    $j('#close_all_results').hide();
+}

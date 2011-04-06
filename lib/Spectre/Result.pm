@@ -28,8 +28,8 @@ method percent ()      { int( $self->passed_count / $self->total_count * 100 ) }
 method has_failures () { $self->passed_count < $self->total_count }
 method link ()         { "/result/" . $self->id }
 
-sub desc () {
+method desc () {
     sprintf( "%s - %s", $self->file_name, $self->report->run_time->strftime("%m-%d %l%P") );
-}                                                                                #__METHOD
+}
 
 1;

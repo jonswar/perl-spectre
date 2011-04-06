@@ -11,6 +11,14 @@ img {
     border: 0;	
 }
 
+.ok, li.ok a {
+    color: #060;
+}
+
+.fail, li.fail a {
+    color: #600;
+}
+
 /*
  * Dashboard page
  */
@@ -18,19 +26,11 @@ img {
 #dashboard td a {
     text-decoration: none;
 }
+#dashboard th {
+    font-weight: normal;
+}
 #dashboard th a {
     text-decoration: none;
-}
-
-#dashboard td.fail a {
-    color: #600;
-}
-
-#dashboard tr.all_ok {
-    display: none;
-}
-
-#dashboard tr.has_fail {
 }
 
 /*
@@ -42,10 +42,29 @@ img {
     padding:0px;
 }
 
-#result li.test_ok {
-    color: #060;
+/*
+ * File page
+ */
+
+#file ul.result_list {
+    list-style-type: none;
+    padding:0px;
 }
 
-#result li.test_fail {
-    color: #600;
+/*
+ * Report page
+ */
+
+#report ul.result_list {
+    list-style-type: none;
+    padding:0px;
 }
+
+#report ul.result_list a {
+    text-decoration: none;
+}
+
+#report ul.test_list {
+    list-style-type: none;
+}
+

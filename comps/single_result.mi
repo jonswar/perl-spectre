@@ -1,0 +1,22 @@
+<%args>
+$.result => (required => 1)
+</%args>
+
+<ul class="test_list">
+% foreach my $test (@tests) {
+%   if ($test->{ok}) {
+  <li class="ok toggle_ok" style="display:none">
+%   }
+%   else {
+  <li class="fail">
+%   }
+      <% $test->{comment} %>
+  </li>
+% }
+</ul>
+
+<%init>
+my @tests = @{$.result->tests};
+my $file = Spectre::File->new(name => $.result->file_name);
+my $report = $.result->report;
+</%init>

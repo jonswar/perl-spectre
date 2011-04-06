@@ -141,7 +141,7 @@ method new_from_tap_archive ($class: $archive_file) {
                         {
                             file_name    => $file_name,
                             passed_count => $passed,
-                            tests        => \@tests,
+                            tests        => [@tests],
                             total_count  => $total,
                         }
                     );

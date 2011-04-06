@@ -13,26 +13,13 @@
 
 <p>
 <a href="#" onclick="sp.toggleOkRows(); return false">
-  <span class="toggle_ok">Show all tests</span>
+  <span class="toggle_ok">Show passing tests</span>
   <span class="toggle_ok" style="display: none">Show only failures</span>
 </a>
 </p>
 
-<div id="result">
-
-  <ul class="test_list">
-% foreach my $test (@tests) {
-%   if ($test->{ok}) {
-    <li class="test_ok toggle_ok" style="display:none">
-%   }
-%   else {
-    <li class="test_fail">
-%   }
-      <% $test->{comment} %>
-    </li>
-% }
-  </ul>
-
+<div id="single_result">
+  <& single_result.mi, result => $result &>
 </div>
 
 <%init>
