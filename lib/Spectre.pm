@@ -19,10 +19,6 @@ sub export_to_level {
     Method::Signatures::Simple->import( into => $caller );
     strict->import;
     warnings->import;
-    {
-        no strict 'refs';
-        *{ $caller . '::CLASS' } = sub () { $caller };    # like CLASS.pm
-    }
 
     # Import Spectre::Util functions into caller.
     #

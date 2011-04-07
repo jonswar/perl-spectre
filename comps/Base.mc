@@ -2,10 +2,18 @@
 $.title => undef
 </%shared>
 
+<%method javascript>
+</%method>
+
 <%method head>
-  <link rel="stylesheet" href="/static/spectre.css">
-  <% $.Defer { %><title>Spectre<% $.title ? ": " . $.title : "" %></title></%>
-  <& javascript.mi &>
+  <% $.Defer { %>
+    <link rel="stylesheet" href="/static/spectre.css">
+    <title>Spectre<% $.title ? ": " . $.title : "" %></title>
+    <& javascript.mi &>
+    <script type="text/javascript">
+      <% $.javascript %>
+    </script>
+  </%>
 </%method>
 
 <%augment wrap>
@@ -17,6 +25,9 @@ $.title => undef
 % if (my $message = delete($m->req->session->{message})) {
       <div class="message"><% $message %></div>
 % }      
+
+    <a href="/dashboard"><img src="/static/i/spectre1.jpg"></a>
+    <h2><% $.Defer { %><% $.title %></%></h2>
 
       <% inner() %>
     </body>

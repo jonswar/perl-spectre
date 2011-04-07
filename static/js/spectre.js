@@ -13,12 +13,20 @@ $j(document).ajaxError(function(e, xhr, settings, exception) {
 
 var sp = new Object();
 
-sp.toggleOkRows = function () {
-    $j('.toggle_ok').toggle();
+sp.showOkTests = function () {
+    $j('.ok_tests').show();
 }
 
-sp.toggleOkFiles = function () {
-    $j('.toggle_ok_files').toggle();
+sp.hideOkTests = function () {
+    $j('.ok_tests').hide();
+}
+
+sp.showOkFiles = function () {
+    $j('.ok_files').show();
+}
+
+sp.hideOkFiles = function () {
+    $j('.ok_files').hide();
 }
 
 sp.toggleResult = function (id) {

@@ -11,12 +11,17 @@ img {
     border: 0;	
 }
 
-.ok, li.ok a {
+.ok, li.ok a, tr.ok a, td.ok a, th.ok a {
     color: #060;
 }
 
-.fail, li.fail a {
+.fail, li.fail a, tr.fail a, td.fail a, th.fail a {
     color: #600;
+}
+
+ul.file_list, ul.test_list, ul.result_list {
+    list-style-type: none;
+    padding:0px;
 }
 
 /*
@@ -37,19 +42,9 @@ img {
  * Result page
  */
 
-#result ul.test_list {
-    list-style-type: none;
-    padding:0px;
-}
-
 /*
  * File page
  */
-
-#file ul.result_list {
-    list-style-type: none;
-    padding:0px;
-}
 
 /*
  * Report page

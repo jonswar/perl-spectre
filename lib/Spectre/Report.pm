@@ -9,18 +9,17 @@ use base qw(Spectre::DB::Object);
 __PACKAGE__->meta->setup(
     table   => 'reports',
     columns => [
-        id       => { type => 'serial' },
-        comments => { type => 'text', default => '""', not_null => 1 },
+        id                => { type => 'serial' },
         create_time       => { type => 'datetime', not_null => 1 },
-        layer             => { type => 'text',     not_null => 1 },
-        name              => { type => 'text',     not_null => 1 },
-        passed_count      => { type => 'integer',  not_null => 1 },
-        run_duration      => { type => 'integer',  not_null => 1 },
+        layer             => { type => 'text', not_null => 1 },
+        name              => { type => 'text', not_null => 1 },
+        passed_count      => { type => 'integer', not_null => 1 },
+        run_duration      => { type => 'integer', not_null => 1 },
         run_time          => { type => 'datetime', not_null => 1 },
-        skipped_count     => { type => 'integer',  not_null => 1 },
-        todo_count        => { type => 'integer',  not_null => 1 },
-        todo_passed_count => { type => 'integer',  not_null => 1 },
-        total_count       => { type => 'integer',  not_null => 1 },
+        skipped_count     => { type => 'integer', not_null => 1 },
+        todo_count        => { type => 'integer', not_null => 1 },
+        todo_passed_count => { type => 'integer', not_null => 1 },
+        total_count       => { type => 'integer', not_null => 1 },
     ],
     primary_key_columns => ['id'],
 );
@@ -29,18 +28,21 @@ __PACKAGE__->meta->make_manager_class( base_name => 'reports', class => 'Spectre
 method link () { "/report/" . $self->id }
 
 method all_results () {
-    return values( %{ $self->_results_by_file_name } );
+    return values( %{ $self->_results_by_file_id } );
 }
 
-method result_for_file ($file_name) {
-    return $self->_results_by_file_name->{$file_name};
+method result_for_file ($file_id) {
+    return $self->_results_by_file_id->{$file_id};
 }
 
-method _results_by_file_name () {
-    $self->{_results_by_file_name} ||=
-      { map { ( $_->file_name, $_ ) }
+method percent ()      { int( $self->passed_count / $self->total_count * 100 ) }
+method has_failures () { $self->passed_count < $self->total_count }
+
+method _results_by_file_id () {
+    $self->{_results_by_file_id} ||=
+      { map { ( $_->file_id, $_ ) }
           @{ Spectre::Results->get_results( query => [ report_id => $self->id ] ) } };
-    $self->{_results_by_file_name};
+    $self->{_results_by_file_id};
 }
 
 # Adapted from Smolder::DB::SmokeReport::update_from_tap_archive
@@ -136,10 +138,12 @@ method new_from_tap_archive ($class: $archive_file) {
                     }
                     my $passed = $total - $failed;
 
+                    my $file_id = Spectre::File->load_or_create($file_name)->id;
+
                     push(
                         @result_hashes,
                         {
-                            file_name    => $file_name,
+                            file_id      => $file_id,
                             passed_count => $passed,
                             tests        => [@tests],
                             total_count  => $total,

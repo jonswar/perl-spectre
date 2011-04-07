@@ -27,6 +27,7 @@ my $app = sub {
 builder {
     mount "/static" => Plack::App::File->new(root => "$root/static");
     mount "/" => builder {
+        enable 'StackTrace', no_print_errors => 1;
         enable 'Session';
         $app;
     };

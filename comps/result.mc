@@ -1,5 +1,18 @@
 %% route ":result_id";
 
+<%method javascript>
+$j(function() {
+  $j("input:checkbox:checked").attr("checked", "");
+  $j('#show_passing_tests').click(function() {
+     if ($j(this).is(":checked")) {
+        $j('.ok_tests').show();
+     } else {
+        $j('.ok_tests').hide();
+     }
+  });
+});
+</%method>
+
 <h2>
 <a href="<% $file->link %>"><% $file->name %></a>
 -
@@ -12,10 +25,7 @@
 </p>
 
 <p>
-<a href="#" onclick="sp.toggleOkRows(); return false">
-  <span class="toggle_ok">Show passing tests</span>
-  <span class="toggle_ok" style="display: none">Show only failures</span>
-</a>
+<input id="show_passing_tests" type=checkbox>Show passing tests
 </p>
 
 <div id="single_result">
@@ -26,6 +36,6 @@
 my $result = Spectre::Result->new(id => $.result_id)->load(speculative=>1) or $m->not_found;
 $.title = "Result - " . $result->desc;
 my @tests = @{$result->tests};
-my $file = Spectre::File->new(name => $result->file_name);
+my $file = $result->file;
 my $report = $result->report;
 </%init>

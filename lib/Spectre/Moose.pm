@@ -18,7 +18,6 @@ sub init_meta {
     MooseX::HasDefaults::RO->init_meta(@_);
     {
         no strict 'refs';
-        *{ $for_class . '::CLASS' } = sub () { $for_class };    # like CLASS.pm
     }
     Spectre->export_to_level(1);
 }

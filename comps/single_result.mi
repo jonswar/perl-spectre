@@ -5,7 +5,7 @@ $.result => (required => 1)
 <ul class="test_list">
 % foreach my $test (@tests) {
 %   if ($test->{ok}) {
-  <li class="ok toggle_ok" style="display:none">
+  <li class="ok ok_tests" style="display:none">
 %   }
 %   else {
   <li class="fail">
@@ -17,6 +17,4 @@ $.result => (required => 1)
 
 <%init>
 my @tests = @{$.result->tests};
-my $file = Spectre::File->new(name => $.result->file_name);
-my $report = $.result->report;
 </%init>
