@@ -5,9 +5,8 @@ use JSON;
 use Mason;
 use Plack::App::File;
 use Plack::Builder;
-use Spectre::File;
-use Spectre::Report;
-use Spectre::Result;
+use Spectre::Model;
+use Time::Duration::Parse;
 use warnings;
 use strict;
 

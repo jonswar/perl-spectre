@@ -36,11 +36,12 @@ $j(function() {
   <th>Actions</th>
   </tr>
 % foreach my $dash_file (@dash_files) {
+%   my $muted = ($dash_file->{file}->is_muted ? "muted" : "");
 %   if ($dash_file->{has_fail}) {
-  <tr class="fail">
+  <tr class="fail <% $muted %>">
 %   }
 %   else {
-  <tr class="ok ok_files" style="display: none">
+  <tr class="ok ok_files <% $muted %>" style="display: none">
 %   }
     <td><a href="<% $dash_file->{file}->link %>"><% $dash_file->{file}->name %></a></td>
 %   foreach my $result (@{$dash_file->{results}}) {

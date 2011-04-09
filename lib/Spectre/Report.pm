@@ -2,7 +2,6 @@ package Spectre::Report;
 use Spectre;
 use Spectre::Result;
 use Clone::Fast qw( clone );
-use DateTime;
 use TAP::Harness::Archive;
 use base qw(Spectre::DB::Object);
 
@@ -160,14 +159,13 @@ method new_from_tap_archive ($class: $archive_file) {
     # Create report
     #
     my $report = $class->new(
-        create_time       => DateTime->now,
-        layer             => $report_layer,
-        name              => $report_name,
-        passed_count      => scalar( $aggregator->passed ),
-        run_duration      => $meta->{stop_time} - $meta->{start_time},
-        run_time          => DateTime->from_epoch( epoch => $meta->{start_time} ),
-        skipped_count     => scalar( $aggregator->skipped ),
-        todo_count        => scalar( $aggregator->todo ),
+        layer         => $report_layer,
+        name          => $report_name,
+        passed_count  => scalar( $aggregator->passed ),
+        run_duration  => $meta->{stop_time} - $meta->{start_time},
+        run_time      => DateTime->from_epoch( epoch => $meta->{start_time}, time_zone => 'local' ),
+        skipped_count => scalar( $aggregator->skipped ),
+        todo_count    => scalar( $aggregator->todo ),
         todo_passed_count => scalar( $aggregator->todo_passed ),
         total_count       => $suite_data{total},
     );
@@ -181,16 +179,6 @@ method new_from_tap_archive ($class: $archive_file) {
     }
 
     return $report;
-}
-
-# Stringify dates when dumping
-#
-method dump () {
-    my $clone = clone($self);
-    foreach my $field qw(start_time create_time) {
-        $clone->{$field} = DateTime->from_epoch( epoch => $clone->{$field} ) . "";
-    }
-    return $clone->SUPER::dump;
 }
 
 1;

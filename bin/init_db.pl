@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 use Spectre::Script qw($root);
-use Spectre::Report;
+use Spectre::Model;
 use IPC::System::Simple qw(run);
 
 unlink("$root/data/spectre.db");
@@ -13,3 +13,7 @@ foreach my $archive_file (@files) {
 my $reports_count = Spectre::Reports->get_reports_count;
 die "load failed -- reports_count = $reports_count"
   unless $reports_count == @files;
+
+my $file = Spectre::File->new( name => 'Poet::t::Utils::Builtin' )->load;
+$file->add_comment( 'swartz', 'Muted temporarily.' );
+$file->add_comment( 'swartz', 'Seems to be working now.' );
