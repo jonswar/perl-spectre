@@ -8,6 +8,7 @@ $j(function() {
         $j('.ok_files').hide();
      }
   });
+  $j('.actions_cell').hover(function(){$j(this).children().toggle()});
 });
 </%method>
 
@@ -38,12 +39,12 @@ $j(function() {
 % foreach my $dash_file (@dash_files) {
 %   my $muted = ($dash_file->{file}->is_muted ? "muted" : "");
 %   if ($dash_file->{has_fail}) {
-  <tr class="fail <% $muted %>">
+  <tr class="<% $muted %>">
 %   }
 %   else {
-  <tr class="ok ok_files <% $muted %>" style="display: none">
+  <tr class="ok_files <% $muted %>" style="display: none">
 %   }
-    <td><a href="<% $dash_file->{file}->link %>"><% $dash_file->{file}->name %></a></td>
+    <td class="<% $dash_file->{has_fail} ? "fail" : "ok" %>"><a href="<% $dash_file->{file}->link %>"><% $dash_file->{file}->name %></a></td>
 %   foreach my $result (@{$dash_file->{results}}) {
 %     if (defined $result) {
 %       my $percent = $result->percent;
@@ -58,7 +59,7 @@ $j(function() {
     <td class="notrun">-</td>
 %     }
 %   }
-  <td align=center><img src="/static/i/mute2.jpg"></td>
+  <td class="actions_cell" style="width:75px">&nbsp;<span style="display: none"><a href="#"><nobr>Actions<img style="vertical-align: text-bottom" width="16" height="16" src="/static/i/triangle_down.gif"></nobr></a></span></td>
   </tr>
 % }
 </table>
@@ -66,10 +67,11 @@ $j(function() {
 
 <%init>
 $.title = 'Dashboard';
-my @reports = @{ Spectre::Reports->get_reports };
+my @reports = @{ Spectre::Reports->get_reports(sort_by => 'run_time desc') };
 my @all_results = map { $_->all_results } @reports;
 my (%found_file);
 my @dash_files = map { $found_file{$_->file_id}++ ? () : ({ file => $_->file }) } @all_results;
+@dash_files = sort { $a->{file}->name cmp $b->{file}->name } @dash_files;
 foreach my $dash_file (@dash_files) {
     $dash_file->{results} = [map { $_->result_for_file($dash_file->{file}->id) } @reports];
     $dash_file->{has_fail} = any { defined($_) && $_->has_failures } @{$dash_file->{results}};

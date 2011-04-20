@@ -10,7 +10,7 @@ __PACKAGE__->meta->setup(
         author      => { type => 'text', not_null => 1 },
         content     => { type => 'text', not_null => 1 },
         file_id     => { type => 'integer', not_null => 1 },
-        create_time => { type => 'datetime', not_null => 1 },
+        create_time => { type => 'datetime', not_null => 1, default => DateTime->now },
     ],
     primary_key_columns => ['id'],
     foreign_keys => [ file => { class => 'Spectre::File', key_columns => { file_id => 'id' } } ],

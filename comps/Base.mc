@@ -18,18 +18,24 @@ $.title => undef
 
 <%augment wrap>
   <html>
-    <body>
     <head>
       <% $.head() %>
     </head>
+    <body>
+    <div id="page_container">
 % if (my $message = delete($m->req->session->{message})) {
       <div class="message"><% $message %></div>
 % }      
 
-    <a href="/dashboard"><img src="/static/i/spectre1.jpg"></a>
+    <!--<div style="float: right"><a href="/"><img src="/static/i/spectre1.jpg"></a>
+    <br>
+    <span style='padding-left: 5px; font: 16px "Lucida Grande", "Arial", "sans-serif"'>SPECTRE</span>
+    </div>-->
+    
     <h2><% $.Defer { %><% $.title %></%></h2>
 
       <% inner() %>
+    </div>
     </body>
   </html>
 </%augment>

@@ -8,17 +8,17 @@ use base qw(Spectre::DB::Object);
 __PACKAGE__->meta->setup(
     table   => 'reports',
     columns => [
-        id                => { type => 'serial' },
-        create_time       => { type => 'datetime', not_null => 1 },
-        layer             => { type => 'text', not_null => 1 },
-        name              => { type => 'text', not_null => 1 },
-        passed_count      => { type => 'integer', not_null => 1 },
-        run_duration      => { type => 'integer', not_null => 1 },
+        id          => { type => 'serial' },
+        create_time => { type => 'datetime', not_null => 1, default => DateTime->now },
+        layer             => { type => 'text',     not_null => 1 },
+        name              => { type => 'text',     not_null => 1 },
+        passed_count      => { type => 'integer',  not_null => 1 },
+        run_duration      => { type => 'integer',  not_null => 1 },
         run_time          => { type => 'datetime', not_null => 1 },
-        skipped_count     => { type => 'integer', not_null => 1 },
-        todo_count        => { type => 'integer', not_null => 1 },
-        todo_passed_count => { type => 'integer', not_null => 1 },
-        total_count       => { type => 'integer', not_null => 1 },
+        skipped_count     => { type => 'integer',  not_null => 1 },
+        todo_count        => { type => 'integer',  not_null => 1 },
+        todo_passed_count => { type => 'integer',  not_null => 1 },
+        total_count       => { type => 'integer',  not_null => 1 },
     ],
     primary_key_columns => ['id'],
 );
@@ -48,14 +48,7 @@ method _results_by_file_id () {
 #
 method new_from_tap_archive ($class: $archive_file) {
 
-    # Extract unique name, layer, and tap dir from base filename, e.g.
-    #   report_name = development-03-14-14_59_45-bufl
-    #   report_layer = development
-    #
-    my ($report_name) = ( basename($archive_file) =~ /^results-(.*).tar.gz/ )
-      or die "cannot determine name from $archive_file";
-    my ($report_layer) = ( $report_name =~ /^([^-]+)-/ )
-      or die "cannot determine layer from $report_name";
+    my $report_name = basename($archive_file);
 
     # Our data structures for holding the info about the TAP parsing
     #
@@ -159,7 +152,7 @@ method new_from_tap_archive ($class: $archive_file) {
     # Create report
     #
     my $report = $class->new(
-        layer         => $report_layer,
+        layer         => 'staging',
         name          => $report_name,
         passed_count  => scalar( $aggregator->passed ),
         run_duration  => $meta->{stop_time} - $meta->{start_time},

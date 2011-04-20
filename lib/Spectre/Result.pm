@@ -26,7 +26,9 @@ __PACKAGE__->meta->setup(
 );
 __PACKAGE__->meta->make_manager_class( base_name => 'results', class => 'Spectre::Results' );
 
-method percent ()      { int( $self->passed_count / $self->total_count * 100 ) }
+method percent () {
+    $self->total_count ? int( $self->passed_count / $self->total_count * 100 ) : 0;
+}
 method has_failures () { $self->passed_count < $self->total_count }
 method link ()         { "/result/" . $self->id }
 

@@ -5,9 +5,10 @@ use IPC::System::Simple qw(run);
 
 unlink("$root/data/spectre.db");
 run("sqlite3 $root/data/spectre.db < $root/db/spectre.sql");
-my $dir   = "$root/data/incoming";
+my $dir   = "$root/data/hearst";
 my @files = glob("$dir/*.tar.gz");
 foreach my $archive_file (@files) {
+    print "$archive_file\n";
     Spectre::Report->new_from_tap_archive($archive_file);
 }
 my $reports_count = Spectre::Reports->get_reports_count;
