@@ -12,7 +12,7 @@ use strict;
 
 my $root = $env->root_dir;
 
-my @plugins = ( 'HTMLFilters', 'LvalueAttributes', 'PSGIHandler', 'RouterSimple', '+Spectre::Mason' );
+my @plugins = ( 'Cache', 'HTMLFilters', 'LvalueAttributes', 'PSGIHandler', 'RouterSimple', '+Spectre::Mason' );
 my $interp = Mason->new(
     comp_root => "$root/comps",
     data_dir  => "$root/data",

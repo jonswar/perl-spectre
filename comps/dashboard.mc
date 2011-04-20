@@ -8,7 +8,14 @@ $j(function() {
         $j('.ok_files').hide();
      }
   });
-  $j('.actions_cell').hover(function(){$j(this).children().toggle()});
+  $j('.menu').hover(
+      function() {
+          $j(this).parent().parent().find(".menuhover").css("background", "#ddd")
+      },
+      function() {
+          $j(this).parent().parent().find(".menuhover").css("background", "#ffffff")
+      }
+  );
 });
 </%method>
 
@@ -24,9 +31,9 @@ $j(function() {
   <input id="show_all_files" type=checkbox>Show all test files
 </p>
 
-<table border=1>
+<table class="grid">
   <tr>
-  <th></th>
+  <th colspan=2></th>
 % foreach my $report (@reports) {
   <th class="<% $report->has_failures ? 'fail' : 'ok' %>">
     <a href="<% $report->link %>">
@@ -34,7 +41,6 @@ $j(function() {
     </a>
   </th>
 % }
-  <th>Actions</th>
   </tr>
 % foreach my $dash_file (@dash_files) {
 %   my $muted = ($dash_file->{file}->is_muted ? "muted" : "");
@@ -44,7 +50,17 @@ $j(function() {
 %   else {
   <tr class="ok_files <% $muted %>" style="display: none">
 %   }
-    <td class="<% $dash_file->{has_fail} ? "fail" : "ok" %>"><a href="<% $dash_file->{file}->link %>"><% $dash_file->{file}->name %></a></td>
+    <td class="menuhover">
+      <ul class="menu">
+        <li>
+          <a href="#a"><img src="/static/i/gear.png"></a>
+          <& file_menu.mi &>
+        </li>
+      </ul>
+    </td>
+    <td class="menuhover <% $dash_file->{has_fail} ? "fail" : "ok" %>">
+      <a href="<% $dash_file->{file}->link %>"><% $dash_file->{file}->name %></a>
+    </td>
 %   foreach my $result (@{$dash_file->{results}}) {
 %     if (defined $result) {
 %       my $percent = $result->percent;
@@ -59,7 +75,6 @@ $j(function() {
     <td class="notrun">-</td>
 %     }
 %   }
-  <td class="actions_cell" style="width:75px">&nbsp;<span style="display: none"><a href="#"><nobr>Actions<img style="vertical-align: text-bottom" width="16" height="16" src="/static/i/triangle_down.gif"></nobr></a></span></td>
   </tr>
 % }
 </table>

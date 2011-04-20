@@ -7,7 +7,8 @@ $.title => undef
 
 <%method head>
   <% $.Defer { %>
-    <link rel="stylesheet" href="/static/spectre.css">
+    <link rel="stylesheet" href="/static/css/spectre.css">
+    <link rel="stylesheet" href="/static/css/superfish.css">
     <title>Spectre<% $.title ? ": " . $.title : "" %></title>
     <& javascript.mi &>
     <script type="text/javascript">
@@ -27,10 +28,7 @@ $.title => undef
       <div class="message"><% $message %></div>
 % }      
 
-    <!--<div style="float: right"><a href="/"><img src="/static/i/spectre1.jpg"></a>
-    <br>
-    <span style='padding-left: 5px; font: 16px "Lucida Grande", "Arial", "sans-serif"'>SPECTRE</span>
-    </div>-->
+<!--    <div style="float: right"><a href="/"><img src="/static/i/spectre2.jpg"></a></div>-->
     
     <h2><% $.Defer { %><% $.title %></%></h2>
 

@@ -38,9 +38,14 @@ method percent ()      { int( $self->passed_count / $self->total_count * 100 ) }
 method has_failures () { $self->passed_count < $self->total_count }
 
 method _results_by_file_id () {
-    $self->{_results_by_file_id} ||=
-      { map { ( $_->file_id, $_ ) }
-          @{ Spectre::Results->get_results( query => [ report_id => $self->id ] ) } };
+    $self->{_results_by_file_id} ||= {
+        map { ( $_->file_id, $_ ) } @{ Spectre::Results->get_results(
+                query   => [ report_id => $self->id ],
+                sort_by => 'file_id',
+                limit   => 10
+            )
+          }
+    };
     $self->{_results_by_file_id};
 }
 

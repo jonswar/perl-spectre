@@ -7,6 +7,10 @@ body {
     background-color: #fff;
 }
 
+#page_container {
+    width: 920px;
+}
+
 img {
     border: 0;	
 }
@@ -45,10 +49,15 @@ ul.file_list, ul.test_list, ul.result_list {
 #dashboard th a {
     text-decoration: none;
 }
-
-#dashboard .actions_cell {
-    font: 14px "Lucida Grande", "Arial", "sans-serif";
+#dashboard .grid th, .grid td {
+    border: 1px solid black;
 }
+#dashboard .grid a:hover {
+    text-decoration: underline;
+}    
+#dashboard .grid .menu a:hover {
+    text-decoration: none;
+}    
 
 /*
  * Result page
@@ -74,8 +83,3 @@ ul.file_list, ul.test_list, ul.result_list {
 #report ul.test_list {
     list-style-type: none;
 }
-
-/* #page_container {
-    width: 1080px;
-}*/
-

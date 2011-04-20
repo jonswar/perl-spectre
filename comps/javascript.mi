@@ -1,5 +1,20 @@
-<script type="text/javascript" src="/static/js/jquery-1.5.2.min.js"></script>
+<script type="text/javascript" src="/static/js/jquery.js"></script>
 <script type="text/javascript" src="/static/js/jquery.dump.js"></script>
+<script type="text/javascript" src="/static/js/hoverIntent.js"></script>
+<script type="text/javascript" src="/static/js/superfish.js"></script>
 <script type="text/javascript">$j = jQuery.noConflict();</script>
 <script type="text/javascript" src="/static/js/spectre.js"></script>
 
+<script type="text/javascript">
+    var superfishOptions = {
+        delay:         250,
+        animation:     {opacity:'show'},
+        speed:         'fast',
+        disableHI:     false,
+    };
+
+    // initialise plugins
+    jQuery(function(){
+        jQuery('ul.menu').superfish(superfishOptions);
+    });
+</script>
