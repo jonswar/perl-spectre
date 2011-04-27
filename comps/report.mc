@@ -1,20 +1,20 @@
 %% route ":report_id";
 
 <%method javascript>
-$j(function() {
-  $j("input:checkbox:checked").attr("checked", "");
-  $j('#show_passing_files').click(function() {
-     if ($j(this).is(":checked")) {
-        $j('.ok_files').show();
+$(function() {
+  $("input:checkbox:checked").attr("checked", "");
+  $('#show_passing_files').click(function() {
+     if ($(this).is(":checked")) {
+        $('.hidden_files').show();
      } else {
-        $j('.ok_files').hide();
+        $('.hidden_files').hide();
      }
   });
-  $j('#show_passing_tests').click(function() {
-     if ($j(this).is(":checked")) {
-        $j('.ok_tests').show();
+  $('#show_passing_tests').click(function() {
+     if ($(this).is(":checked")) {
+        $('.ok_tests').show();
      } else {
-        $j('.ok_tests').hide();
+        $('.ok_tests').hide();
      }
   });
 });
@@ -47,7 +47,7 @@ $j(function() {
     <li class="fail">
 %   }
 %   else {
-    <li class="ok ok_files" style="display: none">
+    <li class="ok hidden_files" style="display: none">
 %   }
       <a href="#" onclick="sp.toggleResult(<% $id %>); return false">
         <img class="triangle_right" id="triangle_right<% $id %>" src="/static/i/triangle_right.gif">

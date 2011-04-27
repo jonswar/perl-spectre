@@ -17,7 +17,8 @@ my %package_methods = (
     'File::Slurp'           => [qw(read_file write_file read_dir)],
     'File::Spec::Functions' => [qw(catdir catfile splitpath splitdir file_name_is_absolute tmpdir)],
     'File::Temp'            => [qw(tempfile tempdir)],
-    'Lingua::EN::Inflect'   => [qw(NO)],
+    'JavaScript::Value::Escape' => [qw(javascript_value_escape)],
+    'Lingua::EN::Inflect'       => [qw(NO)],
     'List::MoreUtils' =>
       [qw(all any none apply first_index first_value indexes last_index last_value uniq)],
     'List::Util'          => [qw(first min max reduce shuffle)],

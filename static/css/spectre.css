@@ -23,7 +23,7 @@ img {
     color: #600;
 }
 
-.mute, li.mute a, tr.mute a, td.mute a, th.mute a {
+.muted, li.muted a, tr.muted a, td.muted a, th.muted a {
     font-style: italic
 }
 

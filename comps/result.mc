@@ -1,13 +1,13 @@
 %% route ":result_id";
 
 <%method javascript>
-$j(function() {
-  $j("input:checkbox:checked").attr("checked", "");
-  $j('#show_passing_tests').click(function() {
-     if ($j(this).is(":checked")) {
-        $j('.ok_tests').show();
+$(function() {
+  $("input:checkbox:checked").attr("checked", "");
+  $('#show_passing_tests').click(function() {
+     if ($(this).is(":checked")) {
+        $('.ok_tests').show();
      } else {
-        $j('.ok_tests').hide();
+        $('.ok_tests').hide();
      }
   });
 });

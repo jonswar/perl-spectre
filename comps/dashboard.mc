@@ -1,19 +1,50 @@
 <%method javascript>
-$j(function() {
-  $j("input:checkbox:checked").attr("checked", "");
-  $j('#show_all_files').click(function() {
-     if ($j(this).is(":checked")) {
-        $j('.ok_files').show();
-     } else {
-        $j('.ok_files').hide();
-     }
+% (my $menutext = $m->scomp('file_menu.mi')) =~ s/\s+/ /g;
+var menutext = '<% javascript_value_escape($menutext) %>';
+
+function menuClickMute (elem, mute_for) {
+  var file_row = $(elem).parents('.file_row');
+  var file_id = file_row.attr('id');
+  $.post('/file/action/set_mute', { file_id: file_id, mute_for: mute_for }, function () {
+    if (mute_for == "Unmute") {
+      file_row.removeClass('muted hidden_files');
+    }
+    else {
+      file_row.addClass('muted hidden_files');
+    }
+    showOrHideHiddenFiles();
   });
-  $j('.menu').hover(
+  hideMenu();
+}
+
+function hideMenu () {
+  $("ul.menu").hideSuperfishUl();
+}
+
+function showOrHideHiddenFiles () {
+  if ($("#show_all_files").is(":checked")) {
+    $('.hidden_files').show();
+  } else {
+    $('.hidden_files').hide();
+  }
+}
+
+$(function() {
+  $("input:checkbox:checked").attr("checked", "");
+  $('#show_all_files').click(function() {
+    showOrHideHiddenFiles();
+  });
+  $('.menu').hover(
       function() {
-          $j(this).parent().parent().find(".menuhover").css("background", "#ddd")
+        $(this).parent().parent().find(".menuhover").css("background", "#ddd")
+        var elem = $(this).find(".menutext");
+        if (elem.html() == "") {
+          elem.html(menutext);
+          $('ul.menu').superfish(superfishOptions);
+        }
       },
       function() {
-          $j(this).parent().parent().find(".menuhover").css("background", "#ffffff")
+        $(this).parent().parent().find(".menuhover").css("background", "#ffffff")
       }
   );
 });
@@ -43,18 +74,15 @@ $j(function() {
 % }
   </tr>
 % foreach my $dash_file (@dash_files) {
-%   my $muted = ($dash_file->{file}->is_muted ? "muted" : "");
-%   if ($dash_file->{has_fail}) {
-  <tr class="<% $muted %>">
-%   }
-%   else {
-  <tr class="ok_files <% $muted %>" style="display: none">
-%   }
+%   my $has_fail = $dash_file->{has_fail};
+%   my $muted    = $dash_file->{file}->is_muted ? "muted" : "";
+%   my $hidden   = ($muted || !$has_fail) ? "hidden_files" : "";
+  <tr class="file_row <% $hidden %> <% $muted %>" id="<% $dash_file->{file}->id %>" <% $hidden ? 'style="display: none"' : '' %>>
     <td class="menuhover">
       <ul class="menu">
         <li>
           <a href="#a"><img src="/static/i/gear.png"></a>
-          <& file_menu.mi &>
+          <div class="menutext"></div>
         </li>
       </ul>
     </td>

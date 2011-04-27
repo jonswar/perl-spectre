@@ -7,7 +7,7 @@ __PACKAGE__->meta->setup(
     table   => 'results',
     columns => [
         id           => { type => 'serial' },
-        file_id      => { type => 'text', not_null => 1 },
+        file_id      => { type => 'integer', not_null => 1 },
         passed_count => { type => 'integer', not_null => 1 },
         report_id    => { type => 'integer', not_null => 1 },
         tests => {

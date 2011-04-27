@@ -6,47 +6,30 @@ if (typeof(console) === 'undefined') {
     console.log = console.error = console.info = console.debug = console.warn = console.trace = console.dir = console.dirxml = console.group = console.groupEnd = console.time = console.timeEnd = console.assert = console.profile = function() {};
 }
 
-var $j = jQuery.noConflict();
-$j(document).ajaxError(function(e, xhr, settings, exception) {
+$(document).ajaxError(function(e, xhr, settings, exception) {
   alert('ajax error in: ' + settings.url);
 });
 
 var sp = new Object();
 
-sp.showOkTests = function () {
-    $j('.ok_tests').show();
-}
-
-sp.hideOkTests = function () {
-    $j('.ok_tests').hide();
-}
-
-sp.showOkFiles = function () {
-    $j('.ok_files').show();
-}
-
-sp.hideOkFiles = function () {
-    $j('.ok_files').hide();
-}
-
 sp.toggleResult = function (id) {
-    $j('#result' + id).toggle();
-    $j('#triangle_right' + id).toggle();
-    $j('#triangle_down' + id).toggle();
+    $('#result' + id).toggle();
+    $('#triangle_right' + id).toggle();
+    $('#triangle_down' + id).toggle();
 }
 
 sp.openAllResults = function () {
-    $j('.single_result').show();
-    $j('.triangle_down').show();
-    $j('.triangle_right').hide();
-    $j('#open_all_results').hide();
-    $j('#close_all_results').show();
+    $('.single_result').show();
+    $('.triangle_down').show();
+    $('.triangle_right').hide();
+    $('#open_all_results').hide();
+    $('#close_all_results').show();
 }
 
 sp.closeAllResults = function () {
-    $j('.single_result').hide();
-    $j('.triangle_down').hide();
-    $j('.triangle_right').show();
-    $j('#open_all_results').show();
-    $j('#close_all_results').hide();
+    $('.single_result').hide();
+    $('.triangle_down').hide();
+    $('.triangle_right').show();
+    $('#open_all_results').show();
+    $('#close_all_results').hide();
 }
